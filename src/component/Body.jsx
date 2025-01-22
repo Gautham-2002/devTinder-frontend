@@ -2,16 +2,15 @@ import { Outlet, useNavigate } from "react-router";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import { useDispatch, useSelector } from "react-redux";
-import { BASE_URL } from "../utils/constants";
-import axios from "axios";
-import { addUser } from "../utils/userSlice";
 import { useEffect } from "react";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
+import { addUser } from "../utils/userSlice";
 
 const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userData = useSelector((store) => store.user);
-
   useEffect(() => {
     if (!userData) {
       (async () => {
@@ -29,7 +28,6 @@ const Body = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   return (
     <div>
       <NavBar />
