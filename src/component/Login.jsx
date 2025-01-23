@@ -6,8 +6,11 @@ import { useNavigate } from "react-router";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-  const [emailId, setEmailId] = useState("gautham@gokulakonda.com");
-  const [password, setPassword] = useState("Gautham@2707");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [isLognForm, setIsLoginForm] = useState(true);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,17 +32,68 @@ const Login = () => {
 
       navigate("/");
     } catch (error) {
-      console.log(error);
       setError(error.response.data ?? "Something went wrong");
       console.log(error);
+    }
+  };
+
+  const handleSignUp = async () => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/signup",
+        {
+          emailId,
+          password,
+          firstName,
+          lastName,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      dispatch(addUser(res.data.user));
+
+      navigate("/profile");
+    } catch (e) {
+      setError(e.response.data ?? "Something went wrong");
+      console.log(e);
     }
   };
   return (
     <div className="flex justify-center my-10">
       <div className="card bg-base-300 w-96 shadow-xl">
         <div className="card-body">
-          <h2 className="card-title">Card title!</h2>
+          <h2 className="card-title">{isLognForm ? "Login" : "Signup"}</h2>
           <div>
+            {!isLognForm && (
+              <>
+                <label className="form-control w-full max-w-xs">
+                  <div className="label">
+                    <span className="label-text">First Name</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Type here"
+                    className="input input-bordered w-full max-w-xs"
+                  />
+                </label>
+                <label className="form-control w-full max-w-xs">
+                  <div className="label">
+                    <span className="label-text">Last Name</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Type here"
+                    className="input input-bordered w-full max-w-xs"
+                  />
+                </label>
+              </>
+            )}
             <label className="form-control w-full max-w-xs">
               <div className="label">
                 <span className="label-text">Email ID</span>
@@ -57,7 +111,7 @@ const Login = () => {
                 <span className="label-text">Password</span>
               </div>
               <input
-                type="text"
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Type here"
@@ -67,10 +121,22 @@ const Login = () => {
           </div>
           <p className="text-red-500">{error}</p>
           <div className="card-actions justify-center mt-2">
-            <button className="btn btn-primary" onClick={handleLogin}>
-              Login
+            <button
+              className="btn btn-primary"
+              onClick={isLognForm ? handleLogin : handleSignUp}
+            >
+              {isLognForm ? "Login" : "Signup"}
             </button>
           </div>
+
+          <p
+            onClick={() => setIsLoginForm(!isLognForm)}
+            className="cursor-pointer text-center my-2 underline text-blue-800"
+          >
+            {isLognForm
+              ? "New User? Signup Here"
+              : "Already have an account? Login Here"}
+          </p>
         </div>
       </div>
     </div>

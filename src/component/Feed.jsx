@@ -23,8 +23,9 @@ const Feed = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(feed);
-
+  if (!feed) return;
+  if (feed.length === 0)
+    return <h1 className="flex justify-center my-10">No Users Found</h1>;
   return (
     <div className="flex justify-center my-10 flex-wrap ">
       {feed && <UserCard key={feed[0]._id} user={feed[0]} />}
