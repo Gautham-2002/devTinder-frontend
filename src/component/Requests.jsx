@@ -1,19 +1,19 @@
-import axios from "axios";
-import { BASE_URL } from "../utils/constants";
 import { useEffect } from "react";
+import { BASE_URL } from "../utils/constants";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addConnections } from "../utils/connectionSlice";
+import { addRequests } from "../utils/requestSlice";
 
-const Connections = () => {
-  const connections = useSelector((store) => store.connections);
+const Requests = () => {
+  const requests = useSelector((store) => store.requests);
   const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.get(BASE_URL + "/user/connections", {
+        const res = await axios.get(BASE_URL + "/user/requests/recieved", {
           withCredentials: true,
         });
-        dispatch(addConnections(res.data.data));
+        dispatch(addRequests(res.data.data));
       } catch (e) {
         console.log(e);
       }
@@ -21,20 +21,20 @@ const Connections = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!connections) return;
+  if (!requests) return;
 
-  if (connections.length === 0) return <h1>No Connections Found</h1>;
+  if (requests.length === 0) return <h1>No Requests Found</h1>;
   return (
     <div className="text-center my-10">
       <h1 className="text-4xl text-bold">Connections</h1>
 
-      {connections.map((connection) => {
+      {requests.map((request) => {
         const { firstName, lastName, photoUrl, age, gender, about } =
-          connection;
+          request.fromUserId;
         return (
           <div
-            key={connection._id}
-            className="flex m-4 p-4 bg-gray-200 rounded-lg w-1/2 mx-auto"
+            key={request._id}
+            className="flex m-4 p-4 bg-gray-200 rounded-lg w-1/2 mx-auto  items-center"
           >
             <div>
               <img
@@ -52,6 +52,10 @@ const Connections = () => {
               </p>
               <p>{about}</p>
             </div>
+            <div className="ml-auto">
+              <button className="btn btn-primary mx-2">Primary</button>
+              <button className="btn btn-secondary mx-2">Secondary</button>
+            </div>
           </div>
         );
       })}
@@ -59,4 +63,4 @@ const Connections = () => {
   );
 };
 
-export default Connections;
+export default Requests;
